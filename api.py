@@ -1,11 +1,11 @@
 import argparse
 
-from fastapi.responses import FileResponse
 import torch
 import uvicorn
 from diffusers import FluxPipeline
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from scalar_fastapi import get_scalar_api_reference
 
