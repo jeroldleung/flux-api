@@ -1,0 +1,31 @@
+[project]
+name = "flux-dev"
+version = "0.1.0"
+description = "Providing an api of accessing self-hosting Flux.1-dev"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "diffusers>=0.32.2",
+    "fastapi>=0.115.12",
+    "pydantic>=2.11.1",
+    "scalar-fastapi>=1.0.3",
+    "torch>=2.6.0",
+    "uvicorn>=0.34.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.11.2",
+]
+
+[tool.ruff]
+line-length = 130
+
+[tool.ruff.lint]
+select = [
+    "I", # isort
+    "E", # pycodestyle error
+    "W", # pycodestyle warning
+    "F", # Pyflakes
+    "B", # flake8-bugbear
+]
