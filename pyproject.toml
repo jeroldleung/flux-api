@@ -1,7 +1,7 @@
 [project]
 name = "flux-dev"
 version = "0.1.0"
-description = "Providing an api of accessing self-hosting Flux.1-dev"
+description = "Providing an api for accessing self-hosting Flux.1-dev"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

@@ -1,6 +1,6 @@
 # flux-dev
 
-A self-hosting FLUX inference backend.
+Providing an api for accessing self-hosting Flux.1-dev.
 
 ## Download model
 
