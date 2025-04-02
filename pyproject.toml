@@ -3,9 +3,10 @@ name = "flux-api"
 version = "0.1.0"
 description = "Providing an api for accessing self-hosting Flux model"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
     "accelerate>=1.6.0",
+    "bitsandbytes>=0.45.4",
     "diffusers>=0.32.2",
     "fastapi>=0.115.12",
     "protobuf>=6.30.2",
