@@ -16,9 +16,9 @@ from transformers import T5EncoderModel
 
 class Request(BaseModel):
     prompt: str = Field("A cat holding a sign that says hello world", description="Text prompt for image generation.")
-    width: int = Field(32, ge=16, le=1024, description="Width of the generated image in pixels. Must can be devided by 16.")
-    height: int = Field(32, ge=16, le=1024, description="Height of the generated image in pixels. Must can be devided by 16.")
-    num_inference_steps: int | None = Field(4, ge=1, le=50, description="Number of steps for the image generation process.")
+    width: int = Field(256, ge=16, le=1024, description="Width of the generated image in pixels. Must can be devided by 16.")
+    height: int = Field(256, ge=16, le=1024, description="Height of the generated image in pixels. Must can be devided by 16.")
+    num_inference_steps: int | None = Field(10, ge=1, le=50, description="Number of steps for the image generation process.")
     guidance_scale: int | None = Field(0.0, description="High guidance scales improve prompt adherence but reduce realism.")
 
 
@@ -34,7 +34,7 @@ async def scalar_html():
 
 @api.post("/v1/inference")
 async def generate_image(req: Request):
-    out = pipe(**req.model_validate_json()).images[0]
+    out = pipe(**req.model_dump()).images[0]
     imageb = io.BytesIO()
     out.save(imageb, format="PNG")
     imageb.seek(0)
