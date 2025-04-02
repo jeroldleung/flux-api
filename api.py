@@ -36,6 +36,7 @@ async def generate_image(req: Request):
         height=req.height,
         num_inference_steps=req.steps,
         guidance_scale=req.guidance,
+        generator=torch.Generator("gpu").manual_seed(0),
     ).images[0]
 
     return FileResponse(out.save("result.png"), media_type="image/png")
