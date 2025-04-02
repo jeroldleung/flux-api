@@ -28,7 +28,7 @@ async def scalar_html():
     return get_scalar_api_reference(openapi_url=api.openapi_url, title=api.title)
 
 
-@api.get("/v1/inference")
+@api.post("/v1/inference")
 async def generate_image(req: Request):
     out = pipe(
         prompt=req.prompt,
@@ -36,7 +36,7 @@ async def generate_image(req: Request):
         height=req.height,
         num_inference_steps=req.steps,
         guidance_scale=req.guidance,
-        generator=torch.Generator("gpu").manual_seed(0),
+        # generator=torch.Generator("cuda").manual_seed(0),
     ).images[0]
 
     return FileResponse(out.save("result.png"), media_type="image/png")
