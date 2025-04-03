@@ -32,8 +32,9 @@ async def scalar_html():
     return get_scalar_api_reference(openapi_url=api.openapi_url, title=api.title)
 
 
-@api.post("/v1/inference")
+@api.post("/v1/inference", response_class=StreamingResponse, response_description="Response in media type of image/png")
 async def generate_image(req: Request):
+    """Generate an image in png format."""
     out = pipe(**req.model_dump()).images[0]
     imageb = io.BytesIO()
     out.save(imageb, format="PNG")
@@ -73,5 +74,6 @@ if __name__ == "__main__":
     )
 
     pipe.to("cuda")  # load model to gpu
+    pipe.set_progress_bar_config(disable=True)
 
     uvicorn.run(api, host="0.0.0.0", port=args.port)
