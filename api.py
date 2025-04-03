@@ -16,10 +16,10 @@ from transformers import T5EncoderModel
 
 class Request(BaseModel):
     prompt: str = Field("A cat holding a sign that says hello world", description="Text prompt for image generation.")
-    width: int = Field(256, ge=16, le=1024, description="Width of the generated image in pixels. Must can be devided by 16.")
-    height: int = Field(256, ge=16, le=1024, description="Height of the generated image in pixels. Must can be devided by 16.")
-    num_inference_steps: int | None = Field(10, ge=1, le=50, description="Number of steps for the image generation process.")
-    guidance_scale: int | None = Field(0.0, description="High guidance scales improve prompt adherence but reduce realism.")
+    width: int = Field(512, ge=16, le=1024, description="Width of the generated image in pixels. Must can be devided by 16.")
+    height: int = Field(512, ge=16, le=1024, description="Height of the generated image in pixels. Must can be devided by 16.")
+    num_inference_steps: int = Field(50, ge=1, le=100, description="Number of steps for the image generation process.")
+    guidance_scale: int = Field(3.0, ge=1.0, le=5.0, description="High guidance scales improve prompt adherence.")
 
 
 api = FastAPI(title="flux-api", docs_url=None, redoc_url=None)
