@@ -22,7 +22,7 @@ class Request(BaseModel):
     guidance_scale: int = Field(3.0, ge=1.0, le=5.0, description="High guidance scales improve prompt adherence.")
 
 
-api = FastAPI(title="flux-api", docs_url=None, redoc_url=None)
+api = FastAPI(title="flux-api", version="0.1.0", docs_url=None, redoc_url=None)
 
 api.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
