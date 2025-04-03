@@ -7,7 +7,7 @@ from diffusers import BitsAndBytesConfig as DiffusersBitsAndBytesConfig
 from diffusers import FluxPipeline, FluxTransformer2DModel
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel, Field
 from scalar_fastapi import get_scalar_api_reference
 from transformers import BitsAndBytesConfig as TransformersBitsAndBytesConfig
@@ -25,6 +25,13 @@ class Request(BaseModel):
 api = FastAPI(title="flux-api", docs_url=None, redoc_url=None)
 
 api.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+
+
+@api.get("/", response_class=HTMLResponse)
+async def home_page():
+    with open("page.html") as f:
+        content = f.read()
+    return HTMLResponse(content=content, status_code=200)
 
 
 @api.get("/docs", include_in_schema=False)

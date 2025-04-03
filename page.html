@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .result img {
+            max-width: 100%;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #4CAF50;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Image Generator</h1>
+
+        <form id="imageForm">
+            <div class="form-group">
+                <label for="prompt">Prompt:</label>
+                <textarea id="prompt" name="prompt" required placeholder="Describe the image you want to generate..."></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="width">Width (pixels):</label>
+                <input type="number" id="width" name="width" value="512" min="16" max="1024" required>
+            </div>
+
+            <div class="form-group">
+                <label for="height">Height (pixels):</label>
+                <input type="number" id="height" name="height" value="512" min="16" max="1024" required>
+            </div>
+
+            <div class="form-group">
+                <label for="steps">Inference Steps:</label>
+                <input type="number" id="steps" name="steps" value="40" min="1" max="100" required>
+            </div>
+
+            <div class="form-group">
+                <label for="guidance">Guidance Scale:</label>
+                <input type="number" id="guidance" name="guidance" value="0.0" min="0" max="5" step="0.1" required>
+            </div>
+
+            <button type="submit">Generate Image</button>
+        </form>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Generating your image...</p>
+        </div>
+
+        <div class="result" id="result">
+            <!-- Generated image will appear here -->
+        </div>
+
+        <div class="error" id="error">
+            <!-- Error messages will appear here -->
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('imageForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Show loading spinner
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').innerHTML = '';
+            document.getElementById('error').innerHTML = '';
+
+            // Get form values
+            const prompt = document.getElementById('prompt').value;
+            const width = document.getElementById('width').value;
+            const height = document.getElementById('height').value;
+            const steps = document.getElementById('steps').value;
+            const guidance = document.getElementById('guidance').value;
+
+            try {
+                // Replace this URL with your actual API endpoint
+                const apiUrl = 'http://127.0.0.1:50001/v1/inference';
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Include any additional headers your API requires
+                        // 'Authorization': 'Bearer your-api-key'
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        width: parseInt(width),
+                        height: parseInt(height),
+                        num_inference_steps: parseInt(steps),
+                        guidance_scale: parseFloat(guidance)
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                // Check if the response is an image
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('image/png')) {
+                    // Create a blob from the response
+                    const imageBlob = await response.blob();
+                    // Create an object URL from the blob
+                    const imageUrl = URL.createObjectURL(imageBlob);
+
+                    // Display the image
+                    const resultDiv = document.getElementById('result');
+                    resultDiv.innerHTML = `
+                        <h3>Generated Image</h3>
+                        <p><strong>Prompt:</strong> ${prompt}</p>
+                        <img src="${imageUrl}" alt="Generated image">
+                    `;
+                } else {
+                    // Handle non-image responses (e.g., error messages in JSON)
+                    const data = await response.json();
+                    throw new Error(data.message || 'Unexpected response format');
+                }
+
+            } catch (error) {
+                document.getElementById('error').innerHTML = `
+                    <p>Error generating image: ${error.message}</p>
+                `;
+                console.error('Error:', error);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
