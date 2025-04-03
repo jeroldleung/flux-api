@@ -29,9 +29,7 @@ api.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, 
 
 @api.get("/", response_class=HTMLResponse)
 async def home_page():
-    with open("page.html") as f:
-        content = f.read()
-    return HTMLResponse(content=content, status_code=200)
+    return HTMLResponse(content=page_content, status_code=200)
 
 
 @api.get("/docs", include_in_schema=False)
@@ -82,5 +80,8 @@ if __name__ == "__main__":
 
     pipe.to("cuda")  # load model to gpu
     pipe.set_progress_bar_config(disable=True)
+
+    with open("page.html") as f:
+        page_content = f.read()
 
     uvicorn.run(api, host="0.0.0.0", port=args.port)
