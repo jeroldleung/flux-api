@@ -11,15 +11,3 @@ install:
 lint:
 		uv run ruff format
 		uv run ruff check --fix
-
-build:
-		docker build -t $(REGISTRY)/$(IMAGE):$(VERSION) .
-
-run:
-		docker run \
-		-d \
-		-p 50001:50001 \
-		-v ./pretrained_models:/app/pretrained_models \
-		--restart always \
-		--name flux-api-1 \
-		$(REGISTRY)/$(IMAGE):$(VERSION)

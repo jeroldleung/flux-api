@@ -1,6 +1,0 @@
-.venv
-.ruff_cache
-__pycache__
-pretrained_models
-.ipynb_checkpoints
-*.ipynb
