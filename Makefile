@@ -1,9 +1,5 @@
 .PHONY: install lint
 
-REGISTRY=fsl
-IMAGE=flux-api
-VERSION=latest
-
 install:
 		git lfs install
 		git clone https://www.modelscope.cn/black-forest-labs/FLUX.1-dev.git pretrained_models/FLUX.1-dev
